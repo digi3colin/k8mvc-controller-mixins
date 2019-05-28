@@ -1,0 +1,19 @@
+{
+  "name": "k8mvc-controller-mixins",
+  "version": "0.0.1",
+  "description": "Controller Mixins to add functions to controller.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digi3colin/k8mvc-controller-mixins.git"
+  },
+  "author": "Shiba Komino",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/digi3colin/k8mvc-controller-mixins/issues"
+  },
+  "homepage": "https://github.com/digi3colin/k8mvc-controller-mixins#readme"
+}
