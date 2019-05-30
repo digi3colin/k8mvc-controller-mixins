@@ -1,4 +1,5 @@
 const K8 = require('k8mvc');
+const fs = require('fs');
 const ControllerMixin = K8.require('ControllerMixin');
 const Database = require('better-sqlite3');
 
@@ -31,9 +32,9 @@ const getConnection = (hostname) =>{
 
 class MultiDomainDB extends ControllerMixin{
   async before(){
-    const hostname = request.hostname.split(':')[0];
+    const hostname = this.client.request.hostname.split(':')[0];
 
-    if(guardRegisterd(hostname, reply))return `404 / store not registered`;
+    if(guardRegisterd(hostname, this.client.response))return `404 / store not registered`;
 
     //setup ORM
     const ORM      = K8.require('ORM');
