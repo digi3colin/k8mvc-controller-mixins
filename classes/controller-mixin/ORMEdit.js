@@ -10,7 +10,8 @@ class ControllerMixinORMEdit extends ControllerMixin{
       this.getBelongsTo(instance),
       this.getBelongsToMany(instance),
       this.getHasMany(instance),
-      this.getFormDestination()
+      this.getFormDestination(),
+      this.getDomain()
     );
   }
 
@@ -102,6 +103,12 @@ class ControllerMixinORMEdit extends ControllerMixin{
           checkpoint: encodeURIComponent(this.client.request.raw.url)
         }
       })
+    }
+  }
+
+  getDomain(){
+    return {
+      domain : this.client.request.hostname
     }
   }
 }
