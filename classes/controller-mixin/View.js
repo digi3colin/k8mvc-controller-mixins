@@ -4,19 +4,20 @@ const ControllerMixin = K8.require('ControllerMixin');
 
 class ControllerMixinView extends ControllerMixin{
   async before(){
-    this.view = this.getView(this.client.layout || 'layout/default', {});
+    this.client.view = this.getView(this.client.layout || 'layout/default', {});
   }
 
   async after(){
-    if(!this.view)return;
+    const layout = this.client.view;
+    if(!layout)return;
 
     if(this.client.tpl){
-      this.view.data.main = await this.client.tpl.render();
+      layout.data.main = await this.client.tpl.render();
     }else{
-      this.view.data.main = this.output;
+      layout.data.main = this.client.output;
     }
 
-    this.client.output = await this.view.render();
+    this.client.output = await layout.render();
   }
 
   getView(path, data, viewClass = null){
