@@ -3,17 +3,18 @@ const ControllerMixin = K8.require('ControllerMixin');
 const ORM = K8.require('ORM');
 
 class ControllerMixinORM extends ControllerMixin{
-  constructor(client){
-    super(client);
+  async before(){
     this.client.id = (this.client.request.params.id) ? parseInt(this.client.request.params.id) : null;
   }
 
-  action_index(){
-    return ORM.all(this.client.model);
-  }
-
-  action_read(){
-    return ORM.get(this.client.model, this.client.id);
+  async execute(action){
+    switch(action){
+      case 'action_index':
+        this.client.instances = ORM.all(this.client.model);
+        break;
+      case 'action_read':
+        this.client.instance = ORM.get(this.client.model, this.client.id);
+    }
   }
 }
 
