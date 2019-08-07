@@ -1,6 +1,6 @@
 {
   "name": "k8mvc-controller-mixins",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "Controller Mixins to add functions to controller.",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/digi3colin/k8mvc-controller-mixins/issues"
   },
-  "homepage": "https://github.com/digi3colin/k8mvc-controller-mixins#readme"
+  "homepage": "https://github.com/digi3colin/k8mvc-controller-mixins#readme",
+  "dependencies": {
+    "better-sqlite3": "^5.4.2",
+    "uniqid": "^5.0.3"
+  }
 }

@@ -1,18 +1,16 @@
+const fs = require('fs');
+const K8 = require('k8mvc');
+const uniqid = require('uniqid');
+
 class HelperForm{
   static parseMultipartForm(request, $_POST){
     return new Promise((resolve, reject) =>{
 
-      const handle = (field, file, filename, encoding, mimetype) =>{
-        //TODO: handle form upload
-        console.log(field, file, filename, encoding, mimetype);
-      };
+      const mp = request.multipart(
+          (field, file, filename, encoding, mimetype) => {},
+          (err) => {if(err)reject(err);});
 
-      const mp = request.multipart(handle, err =>{
-        if(err)reject(err);
-        resolve();
-      });
-
-      mp.on('field', (key, value) =>{
+      mp.on('field', (key, value) => {
         if(/\[]$/.test(key)){
           const k = key.replace('[]', '');
           $_POST[k] = $_POST[k] || [];
@@ -20,7 +18,25 @@ class HelperForm{
         }else{
           $_POST[key] = value;
         }
-      })
+      });
+
+      mp.on('file', (fieldname, file, filename, encoding, mimetype) => {
+        const path = `${K8.EXE_PATH}/tmp/${uniqid()}`;
+        file.pipe(fs.createWriteStream(path));
+
+        file.on('data', data => {});
+
+        file.on('end', ()=> {
+          $_POST[fieldname] = {
+            tmp: path,
+            filename: filename,
+            encoding: encoding,
+            mimetype: mimetype
+          };
+        });
+      });
+
+      mp.on('finish', () => { resolve(); });
     });
   }
 

@@ -39,6 +39,10 @@ class AdminActionLogger extends ControllerMixer{
             fs.appendFile(file, `${JSON.stringify(data)}\n` , err => {if (err) throw err;});
         }
     }
+
+    async execute(action){
+        this.client.response.header('X-ZOPS-Controller-Action', `${ this.client.constructor.name }::${action}`);
+    }
 }
 
 module.exports  = AdminActionLogger;
