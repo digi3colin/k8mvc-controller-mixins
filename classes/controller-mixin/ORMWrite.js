@@ -123,11 +123,11 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
     m.hasMany.forEach(x => manyModels[x.model] = true);
 
     Object.keys(children).forEach(
-      x => {
-        if(manyModels[x] !== true){
-          throw new Error(`Invalid POST data. ${m.name} not has many ${x}`);
+        x => {
+          if(manyModels[x] !== true){
+            throw new Error(`Invalid POST data. ${m.name} not has many ${x}`);
+          }
         }
-      }
     )
   }
 

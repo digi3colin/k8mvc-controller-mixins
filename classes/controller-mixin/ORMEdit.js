@@ -4,15 +4,38 @@ const HelperForm = K8.require('helper/Form');
 const ORM = K8.require('ORM');
 
 class ControllerMixinORMEdit extends ControllerMixin{
-  action_edit(instance){
-    return Object.assign(
-      this.getFieldData(instance),
-      this.getBelongsTo(instance),
-      this.getBelongsToMany(instance),
-      this.getHasMany(instance),
-      this.getFormDestination(),
-      this.getDomain()
+
+  action_edit(){
+    const instance = this.client.instance;
+    this.client.data = Object.assign(
+        this.getFieldData(instance),
+        this.getBelongsTo(instance),
+        this.getBelongsToMany(instance),
+        this.getHasMany(instance),
+        this.getFormDestination(),
+        this.getDomain()
     );
+  }
+
+  action_read(){
+    this.action_edit()
+  }
+
+  action_create(){
+    this.client.instance = new this.client.model();
+    const $_GET = this.client.request.query || {};
+
+    if($_GET['values']){
+      const values = JSON.parse($_GET['values']);
+
+      Object.keys(this.client.instance).forEach(x => {
+        if(values[x] !== undefined){
+          this.client.instance[x] = values[x];
+        }
+      });
+    }
+
+    this.action_edit();
   }
 
   getFormDestination(){
@@ -59,20 +82,20 @@ class ControllerMixinORMEdit extends ControllerMixin{
 
     return {
       belongsToMany: m.belongsToMany.map( x => {
-        const model = K8.require(`model/${x}`);
-        const lk = m.key;
-        const fk = model.key;
-        const table = `${m.lowercase}_${model.tableName}`;
+            const model = K8.require(`model/${x}`);
+            const lk = m.key;
+            const fk = model.key;
+            const table = `${m.lowercase}_${model.tableName}`;
 
-        return{
-          model : model,
-          value : ORM
-            .prepare(`SELECT ${fk} from ${table} WHERE ${lk} = ?`)
-            .all(instance.id),
-          items: ORM.all(model)
-        }
-      }
-    )}
+            return{
+              model : model,
+              value : ORM
+                  .prepare(`SELECT ${fk} from ${table} WHERE ${lk} = ?`)
+                  .all(instance.id),
+              items: ORM.all(model)
+            }
+          }
+      )}
   }
 
   getHasMany(instance){
@@ -89,12 +112,12 @@ class ControllerMixinORMEdit extends ControllerMixin{
         const table = `${model.tableName}`;
 
         const items = ORM.prepare(`SELECT * from ${table} WHERE ${fk} = ?`)
-          .all(this.client.id)
-          .map(item => Object.assign(item, {
-            fields: Object
-              .keys(model.fieldType)
-              .map(y => HelperForm.getFieldValue(`${model.name}(${item.id})`, y, model.fieldType[y], item[y] ||''))
-          }));
+            .all(this.client.id)
+            .map(item => Object.assign(item, {
+              fields: Object
+                  .keys(model.fieldType)
+                  .map(y => HelperForm.getFieldValue(`${model.name}(${item.id})`, y, model.fieldType[y], item[y] ||''))
+            }));
 
         return {
           model : model,

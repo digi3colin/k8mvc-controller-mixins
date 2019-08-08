@@ -5,6 +5,7 @@ const ControllerMixin = K8.require('ControllerMixin');
 class ControllerMixinView extends ControllerMixin{
   async before(){
     this.client.view = this.getView(this.client.layout || 'layout/default', {});
+    this.client.getView = this.getView;
   }
 
   async after(){
