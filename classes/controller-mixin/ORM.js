@@ -7,14 +7,15 @@ class ControllerMixinORM extends ControllerMixin{
     this.client.id = (this.client.request.params.id) ? parseInt(this.client.request.params.id) : null;
   }
 
-  async execute(action){
-    switch(action){
-      case 'action_index':
-        this.client.instances = ORM.all(this.client.model);
-        break;
-      case 'action_read':
-        this.client.instance = ORM.get(this.client.model, this.client.id);
+  action_index(){
+    if(!this.client.model || !this.client.model.tableName){
+      return;
     }
+    this.client.instances = ORM.all(this.client.model);
+  }
+
+  action_read(){
+    this.client.instance = ORM.get(this.client.model, this.client.id);
   }
 }
 
