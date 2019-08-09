@@ -65,7 +65,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
 
     return {
       belongsTo: m.belongsTo.map(x => {
-        const model = K8.require(`model/${x.model}`);
+        const model = K8.require(`models/${x.model}`);
         return {
           model: model,
           foreign_key: x.fk,
@@ -82,7 +82,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
 
     return {
       belongsToMany: m.belongsToMany.map( x => {
-            const model = K8.require(`model/${x}`);
+            const model = K8.require(`models/${x}`);
             const lk = m.key;
             const fk = model.key;
             const table = `${m.lowercase}_${model.tableName}`;
@@ -106,7 +106,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
     //eg. shipping address and billing address with same address id.
     return {
       hasMany : m.hasMany.map( x => {
-        const model = K8.require(`model/${x.model}`);
+        const model = K8.require(`models/${x.model}`);
 
         const fk = x.fk;
         const table = `${model.tableName}`;

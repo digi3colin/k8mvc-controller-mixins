@@ -8,9 +8,8 @@ class ControllerMixinORM extends ControllerMixin{
   }
 
   action_index(){
-    if(!this.client.model || !this.client.model.tableName){
-      return;
-    }
+    if(!this.client.model)return;
+
     this.client.instances = ORM.all(this.client.model);
   }
 

@@ -82,7 +82,7 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
       if(values === undefined)return;
       if(!Array.isArray(values))return;
 
-      const model = K8.require(`model/${x}`);
+      const model = K8.require(`models/${x}`);
       const lk = m.key;
       const table = `${m.lowercase}_${model.tableName}`;
 
@@ -146,7 +146,7 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
     });
 
     Object.keys(validatedChildren).forEach(x => {
-      const model = K8.require(`model/${x}`);
+      const model = K8.require(`models/${x}`);
 
       validatedChildren[x].forEach(id => {
         const prefix = `${x}(${id})`;
