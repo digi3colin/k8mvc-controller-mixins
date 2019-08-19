@@ -85,7 +85,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
             const model = K8.require(`models/${x}`);
             const lk = m.key;
             const fk = model.key;
-            const table = `${m.lowercase}_${model.tableName}`;
+            const table = `${m.jointTablePrefix}_${model.tableName}`;
 
             return{
               model : model,

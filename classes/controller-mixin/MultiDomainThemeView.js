@@ -8,9 +8,11 @@ class MultiDomainThemeView extends ControllerMixinView{
     this.themePath = K8.EXE_PATH.replace('/server', '/sites/')  + hostname + '/themes/default/';
 
     this.client.view = this.getView(this.client.layout || 'layout/default', {domain : this.client.request.hostname});
+    this.client.getView = (path, data, viewClass = null) => this.getView(path, data, viewClass);
   }
 
   async after(){
+    if(this.client.output !== '')return;
     if(!this.client.view)return;
 
     if(this.client.tpl){
