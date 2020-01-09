@@ -15,9 +15,7 @@ class MultiDomainDB extends ControllerMixin{
       return;
     }
 
-    //setup ORM
-    const ORM = K8.require('ORM');
-    ORM.setDB(MultiDomainDB.getConnection(hostname));
+    this.client.db = MultiDomainDB.getConnection(hostname);
   }
 
   static getConnection(hostname){

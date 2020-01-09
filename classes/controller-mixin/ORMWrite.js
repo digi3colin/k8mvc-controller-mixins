@@ -1,6 +1,5 @@
 const K8 = require('k8mvc');
 const ControllerMixinMultipartForm = K8.require('controller-mixin/MultipartForm');
-const ORM = K8.require('ORM');
 
 class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
   action_update(){
@@ -59,7 +58,8 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
     const sql = `UPDATE ${m.tableName} SET ${Object.keys(fieldsToUpdate).map(x => `${x} = ?`).join(', ')} WHERE id = ?`;
     const values = Object.keys(fieldsToUpdate).map(x => fieldsToUpdate[x]);
 
-    ORM.prepare(sql).run(...values, id);
+    const mm = new m(null, this.client.db);
+    mm.prepare(sql).run(...values, id);
   }
 
   create(fieldsToUpdate){
@@ -67,7 +67,8 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
     const sql = `INSERT INTO ${m.tableName} (${Object.keys(fieldsToUpdate).join(', ')}) VALUES (${Object.keys(fieldsToUpdate).map(x => '?').join(', ')})`;
     const values = Object.keys(fieldsToUpdate).map(x => fieldsToUpdate[x]);
 
-    const res = ORM.prepare(sql).run(...values);
+    const mm = new m(null, this.client.db);
+    const res = mm.prepare(sql).run(...values);
     this.client.id = res.lastInsertRowid;
   }
 
@@ -75,6 +76,7 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
     const m = this.client.model;
     if(!m.belongsToMany || m.belongsToMany.length <= 0)return;
 
+    const mm = new m(null, this.client.db);
     const $_POST = this.client.$_POST;
 
     m.belongsToMany.forEach(x => {
@@ -87,10 +89,11 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
       const table = `${m.lowercase}_${model.tableName}`;
 
       //remove
-      ORM.prepare(`DELETE FROM ${table} WHERE ${lk} = ?`).run(this.client.id);
+
+      mm.prepare(`DELETE FROM ${table} WHERE ${lk} = ?`).run(this.client.id);
 
       //add
-      ORM.prepare(`INSERT INTO ${table} VALUES ${values.map(x => `(${this.client.id}, ?)`).join(', ')}`).run(...values);
+      mm.prepare(`INSERT INTO ${table} VALUES ${values.map(x => `(${this.client.id}, ?)`).join(', ')}`).run(...values);
 
     });
   }
@@ -147,6 +150,7 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
 
     Object.keys(validatedChildren).forEach(x => {
       const model = K8.require(`models/${x}`);
+      const m = new model(null, this.client.db);
 
       validatedChildren[x].forEach(id => {
         const prefix = `${x}(${id})`;
@@ -165,7 +169,7 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
         const sql = `UPDATE ${model.tableName} SET ${Object.keys(fieldsToUpdate).map(x => `${x} = ?`).join(', ')} WHERE id = ?`;
         const childValues = Object.keys(fieldsToUpdate).map(x => fieldsToUpdate[x]);
 
-        ORM.prepare(sql).run(...childValues, id);
+        m.prepare(sql).run(...childValues, id);
       });
     });
   }

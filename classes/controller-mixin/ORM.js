@@ -1,6 +1,5 @@
 const K8 = require('k8mvc');
 const ControllerMixin = K8.require('ControllerMixin');
-const ORM = K8.require('ORM');
 
 class ControllerMixinORM extends ControllerMixin{
   async before(){
@@ -10,11 +9,12 @@ class ControllerMixinORM extends ControllerMixin{
   action_index(){
     if(!this.client.model)return;
 
-    this.client.instances = ORM.all(this.client.model);
+    const m = new this.client.model(null, this.client.db);
+    this.client.instances = m.all();
   }
 
   action_read(){
-    this.client.instance = ORM.get(this.client.model, this.client.id);
+    this.client.instance = new this.client.model(this.client.id, this.client.db);
   }
 }
 

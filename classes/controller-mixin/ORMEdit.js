@@ -1,7 +1,6 @@
 const K8 = require('k8mvc');
 const ControllerMixin = K8.require('ControllerMixin');
 const HelperForm = K8.require('helper/Form');
-const ORM = K8.require('ORM');
 
 class ControllerMixinORMEdit extends ControllerMixin{
 
@@ -66,11 +65,12 @@ class ControllerMixinORMEdit extends ControllerMixin{
     return {
       belongsTo: m.belongsTo.map(x => {
         const model = K8.require(`models/${x.model}`);
+        const mm = new model(null, this.client.db);
         return {
           model: model,
           foreign_key: x.fk,
           value : instance[x.fk],
-          items : ORM.all(model)
+          items : mm.all()
         }
       })
     }
@@ -86,13 +86,14 @@ class ControllerMixinORMEdit extends ControllerMixin{
             const lk = m.key;
             const fk = model.key;
             const table = `${m.jointTablePrefix}_${model.tableName}`;
+            const mm = new model(null, this.client.db);
 
             return{
               model : model,
-              value : ORM
+              value : mm
                   .prepare(`SELECT ${fk} from ${table} WHERE ${lk} = ?`)
                   .all(instance.id),
-              items: ORM.all(model)
+              items: mm.all()
             }
           }
       )}
@@ -107,11 +108,12 @@ class ControllerMixinORMEdit extends ControllerMixin{
     return {
       hasMany : m.hasMany.map( x => {
         const model = K8.require(`models/${x.model}`);
+        const mm = new model(null, this.client.db);
 
         const fk = x.fk;
         const table = `${model.tableName}`;
 
-        const items = ORM.prepare(`SELECT * from ${table} WHERE ${fk} = ?`)
+        const items = mm.prepare(`SELECT * from ${table} WHERE ${fk} = ?`)
             .all(this.client.id)
             .map(item => Object.assign(item, {
               fields: Object
