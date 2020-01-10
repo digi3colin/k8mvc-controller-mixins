@@ -7,7 +7,9 @@ const DB = {pool : []};
 
 class MultiDomainDB extends ControllerMixin{
   async before(){
-    const hostname = this.client.request.hostname.split(':')[0];
+    const request = this.client.request;
+    const host = request.hostname || 'localhost';
+    const hostname = host.split(':')[0];
 
     //guard hostname not registered.
     if(!fs.existsSync(`${K8.EXE_PATH}/../sites/${hostname}`)){

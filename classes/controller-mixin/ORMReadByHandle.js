@@ -6,7 +6,7 @@ class ORMReadByHandle extends ControllerMixin{
     const model = this.client.model;
     const handle = this.client.request.params.handle;
 
-    const mm = new model(null, this.client.db);
+    const mm = new model(null, {database: this.client.db} );
     this.client.instance = Object.assign(mm, mm.prepare(`SELECT * from ${model.tableName} WHERE handle = ?`).get(handle));
   }
 

@@ -21,7 +21,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
   }
 
   action_create(){
-    this.client.instance = new this.client.model();
+    this.client.instance = new this.client.model(null, {database : this.client.db});
     const $_GET = this.client.request.query || {};
 
     if($_GET['values']){
@@ -65,7 +65,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
     return {
       belongsTo: m.belongsTo.map(x => {
         const model = K8.require(`models/${x.model}`);
-        const mm = new model(null, this.client.db);
+        const mm = new model(null, {database : this.client.db});
         return {
           model: model,
           foreign_key: x.fk,
@@ -86,7 +86,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
             const lk = m.key;
             const fk = model.key;
             const table = `${m.jointTablePrefix}_${model.tableName}`;
-            const mm = new model(null, this.client.db);
+            const mm = new model(null, {database : this.client.db});
 
             return{
               model : model,
@@ -108,7 +108,7 @@ class ControllerMixinORMEdit extends ControllerMixin{
     return {
       hasMany : m.hasMany.map( x => {
         const model = K8.require(`models/${x.model}`);
-        const mm = new model(null, this.client.db);
+        const mm = new model(null, {database : this.client.db});
 
         const fk = x.fk;
         const table = `${model.tableName}`;

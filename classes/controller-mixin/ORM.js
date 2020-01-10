@@ -9,12 +9,12 @@ class ControllerMixinORM extends ControllerMixin{
   action_index(){
     if(!this.client.model)return;
 
-    const m = new this.client.model(null, this.client.db);
+    const m = new this.client.model(null, {database: this.client.db});
     this.client.instances = m.all();
   }
 
   action_read(){
-    this.client.instance = new this.client.model(this.client.id, this.client.db);
+    this.client.instance = new this.client.model(this.client.id, {database: this.client.db});
   }
 }
 
