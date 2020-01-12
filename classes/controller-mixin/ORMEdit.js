@@ -88,12 +88,21 @@ class ControllerMixinORMEdit extends ControllerMixin{
             const table = `${m.jointTablePrefix}_${model.tableName}`;
             const mm = new model(null, {database : this.client.db});
 
+            const items = mm.all();
+            const itemsById = {};
+            items.forEach(x => itemsById[x.id] = x);
+            const values = mm
+                .prepare(`SELECT ${fk} from ${table} WHERE ${lk} = ?`)
+                .all(instance.id);
+
+            values.forEach(x => {
+              itemsById[x[fk]].linked = true;
+            }) ;
+
             return{
               model : model,
-              value : mm
-                  .prepare(`SELECT ${fk} from ${table} WHERE ${lk} = ?`)
-                  .all(instance.id),
-              items: mm.all()
+              values : values,
+              items: items
             }
           }
       )}

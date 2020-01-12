@@ -14,6 +14,8 @@ class ControllerMixinORM extends ControllerMixin{
   }
 
   action_read(){
+    if(!this.client.model)return;
+
     this.client.instance = new this.client.model(this.client.id, {database: this.client.db});
   }
 }

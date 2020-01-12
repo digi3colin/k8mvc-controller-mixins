@@ -84,16 +84,18 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
       if(values === undefined)return;
       if(!Array.isArray(values))return;
 
+      const filteredValues = values.filter(x => (x !== ""));
+
       const model = K8.require(`models/${x}`);
       const lk = m.key;
-      const table = `${m.lowercase}_${model.tableName}`;
+      const table = `${m.jointTablePrefix}_${model.tableName}`;
 
       //remove
-
       mm.prepare(`DELETE FROM ${table} WHERE ${lk} = ?`).run(this.client.id);
+      if(filteredValues.length <= 0)return;
 
       //add
-      mm.prepare(`INSERT INTO ${table} VALUES ${values.map(x => `(${this.client.id}, ?)`).join(', ')}`).run(...values);
+      mm.prepare(`INSERT INTO ${table} VALUES ${filteredValues.map((x, i) => `(${this.client.id}, ?, ${i})`).join(', ')}`).run(...filteredValues);
 
     });
   }

@@ -3,6 +3,8 @@ const ControllerMixin = K8.require('ControllerMixin');
 
 class ORMReadByHandle extends ControllerMixin{
   action_read_by_handle(){
+    if(!this.client.model)return;
+
     const model = this.client.model;
     const handle = this.client.request.params.handle;
 
