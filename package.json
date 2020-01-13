@@ -1,6 +1,6 @@
 {
   "name": "k8mvc-controller-mixins",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "description": "Controller Mixins to add functions to controller.",
   "main": "index.js",
   "scripts": {

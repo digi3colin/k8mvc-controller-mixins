@@ -3,7 +3,7 @@ const ControllerMixin = K8.require('ControllerMixin');
 
 class Mime extends ControllerMixin{
     before(){
-        const matchExtension = (/\.[0-9a-z]+[$?]/i).exec(this.client.request.raw.url || '');
+        const matchExtension = (/\.[0-9a-z]+($|\?)/i).exec(this.client.request.raw.url || '');
         const extension = matchExtension ? matchExtension[0].replace(/[.?]/g, '') : 'html';
         this.client.fileExtension = extension;
 
