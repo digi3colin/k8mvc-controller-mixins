@@ -91,12 +91,14 @@ class ControllerMixinORMEdit extends ControllerMixin{
             const items = mm.all();
             const itemsById = {};
             items.forEach(x => itemsById[x.id] = x);
+
             const values = mm
-                .prepare(`SELECT ${fk} from ${table} WHERE ${lk} = ?`)
+                .prepare(`SELECT * from ${table} WHERE ${lk} = ?`)
                 .all(instance.id);
 
             values.forEach(x => {
               itemsById[x[fk]].linked = true;
+              itemsById[x[fk]].weight = x.weight;
             }) ;
 
             return{
