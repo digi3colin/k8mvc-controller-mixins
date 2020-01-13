@@ -54,22 +54,17 @@ class ControllerMixinORMWrite extends ControllerMixinMultipartForm{
 
   update(fieldsToUpdate){
     const m = this.client.model;
-    const id = this.client.id;
-    const sql = `UPDATE ${m.tableName} SET ${Object.keys(fieldsToUpdate).map(x => `${x} = ?`).join(', ')} WHERE id = ?`;
-    const values = Object.keys(fieldsToUpdate).map(x => fieldsToUpdate[x]);
-
-    const mm = new m(null, {database : this.client.db});
-    mm.prepare(sql).run(...values, id);
+    const mm = new m(this.client.id, {database : this.client.db});
+    Object.assign(mm, fieldsToUpdate);
+    mm.save();
   }
 
   create(fieldsToUpdate){
     const m = this.client.model;
-    const sql = `INSERT INTO ${m.tableName} (${Object.keys(fieldsToUpdate).join(', ')}) VALUES (${Object.keys(fieldsToUpdate).map(x => '?').join(', ')})`;
-    const values = Object.keys(fieldsToUpdate).map(x => fieldsToUpdate[x]);
-
     const mm = new m(null, {database : this.client.db});
-    const res = mm.prepare(sql).run(...values);
-    this.client.id = res.lastInsertRowid;
+    Object.assign(mm, fieldsToUpdate);
+    mm.save();
+    this.client.id = mm.id;
   }
 
   add(){
