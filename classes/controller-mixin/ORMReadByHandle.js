@@ -10,12 +10,7 @@ class ORMReadByHandle extends ControllerMixin{
 
     const mm = new model(null, {database: this.client.db} );
     this.client.instance = Object.assign(mm, mm.prepare(`SELECT * from ${model.tableName} WHERE handle = ?`).get(handle));
-  }
-
-  instanceNotFoundRedirect(instance, response, path){
-    if(!instance || !instance.id || instance.length === 0){
-      response.redirect(path);
-    }
+    if(!this.client.instance.id)this.client.notFound(`${model.tableName} not found`);
   }
 }
 
