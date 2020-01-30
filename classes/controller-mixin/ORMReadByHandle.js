@@ -13,7 +13,6 @@ class ORMReadByHandle extends ControllerMixin{
     if(!instance.id)this.client.notFound(`${model.tableName} handle "${handle}" not found`);
 
     this.client.instance = instance;
-    console.log(instance.template_suffix);
 
     const prefix = this.client.templatePrefix || this.client.model.jointTablePrefix;
     const suffix = instance.template_suffix || '';
