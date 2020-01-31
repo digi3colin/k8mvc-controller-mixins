@@ -17,23 +17,27 @@ class MultiDomainDB extends ControllerMixin{
       return;
     }
 
-    this.client.db = MultiDomainDB.getConnection(hostname);
+    const conn = MultiDomainDB.getConnections(hostname);
+    this.client.db = conn.content;
+    this.client.dbTransaction = conn.transaction;
+    this.client.dbInventory = conn.inventory;
   }
 
-  static getConnection(hostname){
+  static getConnections(hostname){
     if(!K8.config.cache.database || !DB.pool[hostname]){
-      const dbPath = `${K8.APP_PATH}/../../sites/${hostname}/db/db.sqlite`;
-      const db = new Database(dbPath);
-//      db.pragma('journal_mode = WAL');
+      const dbPath = `${K8.APP_PATH}/../../sites/${hostname}/db/`;
 
       DB.pool[hostname] = {
-        connection : db,
+        content     : new Database(dbPath + 'content.sqlite'),
+        transaction : new Database(dbPath + 'transaction.sqlite'),
+        inventory   : new Database(dbPath + 'inventory.sqlite'),
         access_at : Date.now()
       };
     }
 
-    DB.pool[hostname].access_at = Date.now();
-    return DB.pool[hostname].connection;
+    const connection = DB.pool[hostname];
+    connection.access_at = Date.now();
+    return connection;
   }
 }
 
